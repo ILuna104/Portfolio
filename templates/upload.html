@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Video — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <style>
+    body { background: var(--bg); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .upload-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 3rem; max-width: 600px; width: 100%; }
+    .upload-box h1 { font-family: var(--font-display); font-size: 2rem; margin-bottom: .5rem; color: var(--text); }
+    .upload-box p { color: var(--muted); margin-bottom: 2rem; }
+    .upload-box input[type=file] { display: block; margin-bottom: 1.5rem; color: var(--text); }
+    .message { padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; background: #1a2a1a; color: #7dff7d; font-size: .9rem; }
+    .existing-list { margin-top: 2rem; }
+    .existing-list h3 { color: var(--muted); font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1rem; }
+    .file-item { display: flex; justify-content: space-between; align-items: center; padding: .75rem 1rem; background: var(--bg); border-radius: 8px; margin-bottom: .5rem; }
+    .file-item span { color: var(--text); font-size: .9rem; font-family: monospace; }
+    .file-item a { color: var(--accent); font-size: .85rem; }
+    .back-link { display: inline-block; margin-top: 2rem; color: var(--muted); font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <div class="upload-box">
+    <h1>Upload Video</h1>
+    <p>Upload local video files here. After uploading, copy the filename into <code>app.py</code> as the <code>video_src</code> for that project.</p>
+
+    {% if message %}
+    <div class="message">{{ message }}</div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+      <input type="file" name="video" accept="video/mp4,video/mov,video/avi,video/webm,video/mkv" />
+      <button type="submit" class="btn btn-primary">Upload Video</button>
+    </form>
+
+    {% if existing %}
+    <div class="existing-list">
+      <h3>Uploaded Videos</h3>
+      {% for f in existing %}
+      <div class="file-item">
+        <span>{{ f }}</span>
+        <a href="{{ url_for('serve_upload', filename=f) }}" target="_blank">Preview ↗</a>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <a href="/" class="back-link">← Back to Portfolio</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ profile.name }} — Marketing Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       NAV
+  ═══════════════════════════════════════════ -->
+  <nav class="nav">
+    <div class="nav-logo">{{ profile.name.split()[0] }}<span>.</span></div>
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact" class="nav-cta">Let's Talk</a></li>
+    </ul>
+    <button class="nav-hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-bg-text" aria-hidden="true">SOCIAL</div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Marketing Portfolio</p>
+      <h1 class="hero-name">{{ profile.name }}</h1>
+      <p class="hero-title">{{ profile.title }}</p>
+      <p class="hero-tagline">{{ profile.tagline }}</p>
+      <div class="hero-ctas">
+        <a href="#work" class="btn btn-primary">View My Work</a>
+        <a href="#contact" class="btn btn-ghost">Hire Me</a>
+      </div>
+    </div>
+    <div class="hero-scroll-indicator">
+      <span>scroll</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+    <!-- Floating social badges -->
+    <div class="hero-badge hero-badge--1">📱 TikTok Strategy</div>
+    <div class="hero-badge hero-badge--2">📸 Instagram Reels</div>
+    <div class="hero-badge hero-badge--3">📊 Analytics</div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       MARQUEE STRIP
+  ═══════════════════════════════════════════ -->
+  <div class="marquee-wrapper" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Brand Strategy</span><span>·</span>
+      <span>Social Media Marketing</span><span>·</span>
+      <span>Content Creation</span><span>·</span>
+      <span>Short-Form Video</span><span>·</span>
+      <span>Audience Growth</span><span>·</span>
+      <span>Meta Ads</span><span>·</span>
+      <span>Influencer Marketing</span><span>·</span>
+      <span>Brand Strategy</span><span>·</span>
+      <span>Social Media Marketing</span><span>·</span>
+      <span>Content Creation</span><span>·</span>
+      <span>Short-Form Video</span><span>·</span>
+      <span>Audience Growth</span><span>·</span>
+      <span>Meta Ads</span><span>·</span>
+      <span>Influencer Marketing</span><span>·</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       WORK / PORTFOLIO
+  ═══════════════════════════════════════════ -->
+  <section id="work" class="section work-section">
+    <div class="section-header">
+      <p class="section-label">Portfolio</p>
+      <h2 class="section-title">Selected Work</h2>
+    </div>
+
+    <div class="projects-grid">
+      {% for project in projects %}
+      <article class="project-card" style="--delay: {{ loop.index0 * 0.1 }}s">
+        <!-- VIDEO PREVIEW AREA -->
+        <div class="project-video-wrap">
+          {% if project.video_type == 'youtube' and project.video_id != 'YOUR_YOUTUBE_VIDEO_ID_HERE' %}
+            <iframe
+              src="https://www.youtube.com/embed/{{ project.video_id }}"
+              title="{{ project.title }}"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+
+          {% elif project.video_type == 'vimeo' and project.video_id != 'YOUR_VIMEO_VIDEO_ID_HERE' %}
+            <iframe
+              src="https://player.vimeo.com/video/{{ project.video_id }}"
+              title="{{ project.title }}"
+              frameborder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+
+          {% elif project.video_type == 'local_file' %}
+            <video controls preload="metadata">
+              <source src="{{ url_for('serve_upload', filename=project.video_src) }}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+
+          {% elif project.video_type == 'tiktok' %}
+            <!-- TikTok embed: paste the <blockquote> embed code into project's tiktok_embed field -->
+            {{ project.get('tiktok_embed', '') | safe }}
+
+          {% elif project.video_type == 'instagram' %}
+            <!-- Instagram embed: paste the embed HTML into project's instagram_embed field -->
+            {{ project.get('instagram_embed', '') | safe }}
+
+          {% else %}
+            <!-- Placeholder shown until video is added -->
+            <div class="video-placeholder">
+              <div class="vp-icon">▶</div>
+              <p>Video coming soon</p>
+              <small>Add video ID in app.py</small>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- PROJECT INFO -->
+        <div class="project-info">
+          <div class="project-meta">
+            <span class="project-category">{{ project.category }}</span>
+            <span class="project-client">{{ project.client }}</span>
+          </div>
+          <h3 class="project-title">{{ project.title }}</h3>
+          <p class="project-description">{{ project.description }}</p>
+          <div class="project-results">{{ project.results }}</div>
+          <div class="project-tags">
+            {% for tag in project.tags %}
+            <span class="tag">{{ tag }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       ABOUT
+  ═══════════════════════════════════════════ -->
+  <section id="about" class="section about-section">
+    <div class="about-inner">
+      <div class="about-text">
+        <p class="section-label">About Me</p>
+        <h2 class="section-title">The mind behind<br><em>the content.</em></h2>
+        <p class="about-bio">{{ profile.bio }}</p>
+        <div class="about-stats">
+          <div class="stat">
+            <span class="stat-number">{{ projects|length }}+</span>
+            <span class="stat-label">Projects</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">100K+</span>   <!-- ← CHANGE THIS if desired -->
+            <span class="stat-label">Views Generated</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">3+</span>       <!-- ← CHANGE THIS if desired -->
+            <span class="stat-label">Years Experience</span>
+          </div>
+        </div>
+      </div>
+      <div class="about-photo-wrap">
+        <!-- ─── PHOTO EMBED ────────────────────────────────────────────────
+             Replace the src below with a real photo path.
+             1. Place your photo in portfolio/static/images/
+             2. Change "profile-photo.jpg" to your actual filename.
+             ──────────────────────────────────────────────────────────────── -->
+        <div class="about-photo-placeholder">
+          <span>Add Photo Here</span>
+          <small>Place image in /static/images/<br>and update the src in index.html</small>
+        </div>
+        <!-- Uncomment once photo is added:
+        <img src="{{ url_for('static', filename='images/profile-photo.jpg') }}" alt="{{ profile.name }}" class="about-photo" />
+        -->
+        <div class="about-photo-accent"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       SKILLS
+  ═══════════════════════════════════════════ -->
+  <section id="skills" class="section skills-section">
+    <div class="section-header">
+      <p class="section-label">Expertise</p>
+      <h2 class="section-title">Skills & Tools</h2>
+    </div>
+    <div class="skills-grid">
+      {% for skill in skills %}
+      <div class="skill-item" style="--delay: {{ loop.index0 * 0.07 }}s">
+        <div class="skill-header">
+          <span class="skill-name">{{ skill.name }}</span>
+          <span class="skill-pct">{{ skill.level }}%</span>
+        </div>
+        <div class="skill-bar-track">
+          <div class="skill-bar-fill" style="--width: {{ skill.level }}%"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       CONTACT
+  ═══════════════════════════════════════════ -->
+  <section id="contact" class="section contact-section">
+    <div class="contact-inner">
+      <div class="contact-text">
+        <p class="section-label">Get in Touch</p>
+        <h2 class="section-title">Let's make<br><em>something great.</em></h2>
+        <p>Whether you need a full campaign, a single reel, or strategy — I'd love to hear about your brand.</p>
+        <div class="contact-socials">
+          <a href="{{ profile.instagram }}" target="_blank" class="social-link">Instagram</a>
+          <a href="{{ profile.tiktok }}" target="_blank" class="social-link">TikTok</a>
+          <a href="{{ profile.linkedin }}" target="_blank" class="social-link">LinkedIn</a>
+        </div>
+      </div>
+      <form class="contact-form" action="/contact" method="POST">
+        {% if contact_success is defined and contact_success %}
+        <div class="form-success">✅ Message sent! I'll be in touch soon.</div>
+        {% endif %}
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email" required />
+        <textarea name="message" rows="5" placeholder="Tell me about your project..."></textarea>
+        <button type="submit" class="btn btn-primary">Send Message →</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════ -->
+  <footer class="footer">
+    <p>© 2025 {{ profile.name }} · Built with 💛</p>
+    <a href="/upload" class="footer-admin">Admin: Upload Videos</a>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <!-- Load Instagram embeds if used -->
+  <script async defer src="//www.instagram.com/embed.js"></script>
+</body>
+</html>
