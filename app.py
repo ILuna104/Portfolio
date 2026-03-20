@@ -30,7 +30,11 @@ app = Flask(__name__)
 # CONFIGURATION
 # ---------------------------------------------------------------------------
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except Exception:
+    UPLOAD_FOLDER = "/tmp/uploads"
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {"mp4", "mov", "avi", "webm", "mkv"}
 
