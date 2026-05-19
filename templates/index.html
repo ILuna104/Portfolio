@@ -158,10 +158,7 @@
              2. Rename file to profile-photo.jpg (or update filename below)
              3. Delete the placeholder div below and uncomment the <img> tag
         ──────────────────────────────────────────────────────────────── -->
-        <div class="about-photo-placeholder">
-          <span>Add Photo Here</span>
-          <small>Place image in /static/images/<br>and update index.html</small>
-        </div>
+        <img src="{{ url_for('static', filename='images/profile-photo.png') }}" alt="{{ profile.name }}" class="about-photo" />
         <!-- Uncomment once photo is added:
         <img src="{{ url_for('static', filename='images/profile-photo.jpg') }}" alt="{{ profile.name }}" class="about-photo" />
         -->

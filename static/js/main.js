@@ -8,11 +8,9 @@ const observer = new IntersectionObserver(
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add("in-view");
-        // For skill bars specifically
         if (entry.target.classList.contains("skill-item")) {
           const fill = entry.target.querySelector(".skill-bar-fill");
-          if (fill) fill.style.width = fill.style.getPropertyValue("--width") ||
-                                        entry.target.style.getPropertyValue("--width");
+          if (fill) fill.style.width = entry.target.style.getPropertyValue("--width");
         }
       }
     });
@@ -20,7 +18,6 @@ const observer = new IntersectionObserver(
   { threshold: 0.15 }
 );
 
-// Observe elements that should animate in
 document.querySelectorAll(".project-card, .skill-item, .about-inner, .contact-inner").forEach((el) => {
   observer.observe(el);
 });
@@ -39,8 +36,6 @@ window.addEventListener("scroll", () => {
   navLinks.forEach((link) => {
     link.style.color = link.getAttribute("href") === `#${current}` ? "var(--accent)" : "";
   });
-
-  // Nav shadow on scroll
   const nav = document.querySelector(".nav");
   nav.style.boxShadow = window.scrollY > 20 ? "0 2px 30px rgba(0,0,0,.5)" : "";
 });
@@ -67,22 +62,16 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     if (target) {
       target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    // Close mobile menu if open
     const navLinks = document.querySelector(".nav-links");
     if (window.innerWidth < 680) navLinks.style.display = "none";
   });
 });
 
-// ── Skill bars trigger when in view ──────────────────────────
-// (handled by IntersectionObserver above)
-// The CSS transition does the animation once "in-view" class is applied.
-
-// ── Parallax on hero bg text (subtle) ────────────────────────
+// ── Parallax on hero bg text ──────────────────────────────────
 const heroBgText = document.querySelector(".hero-bg-text");
 if (heroBgText) {
   window.addEventListener("scroll", () => {
-    const scrolled = window.scrollY;
-    heroBgText.style.transform = `translateY(calc(-50% + ${scrolled * 0.15}px))`;
+    heroBgText.style.transform = `translateY(calc(-50% + ${window.scrollY * 0.15}px))`;
   });
 }
 
@@ -93,16 +82,14 @@ if (heroBgText) {
   if (!track) return;
 
   const slides = Array.from(track.querySelectorAll(".gallery-slide"));
+  const total = slides.length;
   let current = 0;
 
-  // How many slides visible at once (matches CSS)
   function visibleCount() {
     if (window.innerWidth < 580) return 1;
     if (window.innerWidth < 900) return 2;
     return 3;
   }
-
-  const total = slides.length;
 
   // Build dots
   slides.forEach((_, i) => {
@@ -119,11 +106,21 @@ if (heroBgText) {
     });
   }
 
+  function getSlideWidth() {
+    // Recalculate live from the DOM so it's always accurate
+    if (slides[0]) {
+      const rect = slides[0].getBoundingClientRect();
+      // gap is 1.5rem = 24px
+      return rect.width + 24;
+    }
+    return 0;
+  }
+
   function goTo(index) {
     const vc = visibleCount();
     const max = Math.max(0, total - vc);
     current = Math.max(0, Math.min(index, max));
-    const slideWidth = slides[0].offsetWidth + 24; // 24 = gap (1.5rem)
+    const slideWidth = getSlideWidth();
     track.style.transform = `translateX(-${current * slideWidth}px)`;
     updateDots();
   }
@@ -131,8 +128,10 @@ if (heroBgText) {
   window.galleryNext = function () { goTo(current + 1); };
   window.galleryPrev = function () { goTo(current - 1); };
 
-  // Recalculate on resize
   window.addEventListener("resize", () => goTo(current));
+
+  // Wait for images to load before initialising position
+  window.addEventListener("load", () => goTo(0));
 
   // Touch / swipe support
   let touchStartX = 0;
@@ -142,7 +141,7 @@ if (heroBgText) {
     if (Math.abs(diff) > 50) diff > 0 ? galleryNext() : galleryPrev();
   });
 
-  // Click slide to open lightbox (only real images, not placeholders)
+  // Click to open lightbox
   slides.forEach((slide) => {
     slide.addEventListener("click", () => {
       const img = slide.querySelector("img");
@@ -172,7 +171,8 @@ if (heroBgText) {
     document.body.style.overflow = "";
   }
 })();
- ───────────────────────────────────
+
+// ── Easter egg: Konami code ───────────────────────────────────
 const KONAMI = [38,38,40,40,37,39,37,39,66,65];
 let konamiIdx = 0;
 document.addEventListener("keydown", (e) => {
