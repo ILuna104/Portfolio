@@ -11,15 +11,14 @@
 </head>
 <body>
 
-  <!-- ═══════════════════════════════════════════
-       NAV
-  ═══════════════════════════════════════════ -->
+  <!-- NAV -->
   <nav class="nav">
     <div class="nav-logo">{{ profile.name.split()[0] }}<span>.</span></div>
     <ul class="nav-links">
       <li><a href="#work">Work</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#skills">Skills</a></li>
+      <li><a href="#gallery">Gallery</a></li>
       <li><a href="#contact" class="nav-cta">Let's Talk</a></li>
     </ul>
     <button class="nav-hamburger" onclick="toggleMenu()">
@@ -27,9 +26,7 @@
     </button>
   </nav>
 
-  <!-- ═══════════════════════════════════════════
-       HERO
-  ═══════════════════════════════════════════ -->
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-bg-text" aria-hidden="true">SOCIAL</div>
     <div class="hero-content">
@@ -46,15 +43,12 @@
       <span>scroll</span>
       <div class="hero-scroll-line"></div>
     </div>
-    <!-- Floating social badges -->
     <div class="hero-badge hero-badge--1">📱 TikTok Strategy</div>
     <div class="hero-badge hero-badge--2">📸 Instagram Reels</div>
     <div class="hero-badge hero-badge--3">📊 Analytics</div>
   </section>
 
-  <!-- ═══════════════════════════════════════════
-       MARQUEE STRIP
-  ═══════════════════════════════════════════ -->
+  <!-- MARQUEE -->
   <div class="marquee-wrapper" aria-hidden="true">
     <div class="marquee-track">
       <span>Brand Strategy</span><span>·</span>
@@ -74,19 +68,15 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       WORK / PORTFOLIO
-  ═══════════════════════════════════════════ -->
+  <!-- WORK / PORTFOLIO -->
   <section id="work" class="section work-section">
     <div class="section-header">
       <p class="section-label">Portfolio</p>
       <h2 class="section-title">Selected Work</h2>
     </div>
-
     <div class="projects-grid">
       {% for project in projects %}
       <article class="project-card" style="--delay: {{ loop.index0 * 0.1 }}s">
-        <!-- VIDEO PREVIEW AREA -->
         <div class="project-video-wrap">
           {% if project.video_type == 'youtube' and project.video_id != 'YOUR_YOUTUBE_VIDEO_ID_HERE' %}
             <iframe
@@ -96,7 +86,6 @@
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen>
             </iframe>
-
           {% elif project.video_type == 'vimeo' and project.video_id != 'YOUR_VIMEO_VIDEO_ID_HERE' %}
             <iframe
               src="https://player.vimeo.com/video/{{ project.video_id }}"
@@ -105,23 +94,16 @@
               allow="autoplay; fullscreen; picture-in-picture"
               allowfullscreen>
             </iframe>
-
           {% elif project.video_type == 'local_file' %}
             <video controls preload="metadata">
               <source src="{{ url_for('serve_upload', filename=project.video_src) }}" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-
           {% elif project.video_type == 'tiktok' %}
-            <!-- TikTok embed: paste the <blockquote> embed code into project's tiktok_embed field -->
             {{ project.get('tiktok_embed', '') | safe }}
-
           {% elif project.video_type == 'instagram' %}
-            <!-- Instagram embed: paste the embed HTML into project's instagram_embed field -->
             {{ project.get('instagram_embed', '') | safe }}
-
           {% else %}
-            <!-- Placeholder shown until video is added -->
             <div class="video-placeholder">
               <div class="vp-icon">▶</div>
               <p>Video coming soon</p>
@@ -129,8 +111,6 @@
             </div>
           {% endif %}
         </div>
-
-        <!-- PROJECT INFO -->
         <div class="project-info">
           <div class="project-meta">
             <span class="project-category">{{ project.category }}</span>
@@ -150,9 +130,7 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════
-       ABOUT
-  ═══════════════════════════════════════════ -->
+  <!-- ABOUT -->
   <section id="about" class="section about-section">
     <div class="about-inner">
       <div class="about-text">
@@ -165,24 +143,24 @@
             <span class="stat-label">Projects</span>
           </div>
           <div class="stat">
-            <span class="stat-number">100K+</span>   <!-- ← CHANGE THIS if desired -->
+            <span class="stat-number">100K+</span>
             <span class="stat-label">Views Generated</span>
           </div>
           <div class="stat">
-            <span class="stat-number">3+</span>       <!-- ← CHANGE THIS if desired -->
+            <span class="stat-number">3+</span>
             <span class="stat-label">Years Experience</span>
           </div>
         </div>
       </div>
       <div class="about-photo-wrap">
-        <!-- ─── PHOTO EMBED ────────────────────────────────────────────────
-             Replace the src below with a real photo path.
-             1. Place your photo in portfolio/static/images/
-             2. Change "profile-photo.jpg" to your actual filename.
-             ──────────────────────────────────────────────────────────────── -->
+        <!-- ─── PROFILE PHOTO ────────────────────────────────────────────
+             1. Place photo in portfolio/static/images/
+             2. Rename file to profile-photo.jpg (or update filename below)
+             3. Delete the placeholder div below and uncomment the <img> tag
+        ──────────────────────────────────────────────────────────────── -->
         <div class="about-photo-placeholder">
           <span>Add Photo Here</span>
-          <small>Place image in /static/images/<br>and update the src in index.html</small>
+          <small>Place image in /static/images/<br>and update index.html</small>
         </div>
         <!-- Uncomment once photo is added:
         <img src="{{ url_for('static', filename='images/profile-photo.jpg') }}" alt="{{ profile.name }}" class="about-photo" />
@@ -192,13 +170,11 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════
-       SKILLS
-  ═══════════════════════════════════════════ -->
+  <!-- SKILLS -->
   <section id="skills" class="section skills-section">
     <div class="section-header">
       <p class="section-label">Expertise</p>
-      <h2 class="section-title">Skills & Tools</h2>
+      <h2 class="section-title">Skills &amp; Tools</h2>
     </div>
     <div class="skills-grid">
       {% for skill in skills %}
@@ -215,9 +191,106 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════
-       CONTACT
-  ═══════════════════════════════════════════ -->
+  <!-- PHOTO GALLERY -->
+  <section id="gallery" class="gallery-section">
+    <div class="gallery-header">
+      <p class="section-label">Behind the Work</p>
+      <h2 class="section-title">Photo Gallery</h2>
+      <p class="gallery-subtitle">On set, behind the scenes, and campaign highlights.</p>
+    </div>
+    <div class="gallery-carousel-wrap">
+      <button class="gallery-arrow gallery-arrow--prev" onclick="galleryPrev()" aria-label="Previous">&#8592;</button>
+      <div class="gallery-track-outer">
+        <div class="gallery-track" id="galleryTrack">
+
+          <!-- ─── PHOTO SLIDES ──────────────────────────────────────────
+               TO ADD MORE PHOTOS:
+               1. Put your .jpg / .jpeg / .png files in: portfolio/static/images/
+               2. Copy one <div class="gallery-slide"> block below
+               3. Update the filename and caption
+               4. git add . / git commit / git push — Render redeploys automatically
+          ──────────────────────────────────────────────────────────────── -->
+
+          <div class="gallery-slide">
+            <img src="{{ url_for('static', filename='images/restorative_yoga.jpg') }}" alt="Restorative Yoga" loading="lazy" />
+            <div class="gallery-caption">
+              <span class="gc-label">Fitness Zone</span>
+              <span class="gc-text">Restorative Yoga Campaign</span>
+            </div>
+          </div>
+
+          <div class="gallery-slide">
+            <img src="{{ url_for('static', filename='images/serentity_station.jpeg') }}" alt="Serenity Station" loading="lazy" />
+            <div class="gallery-caption">
+              <span class="gc-label">Event Promo</span>
+              <span class="gc-text">Serenity Station Open House</span>
+            </div>
+          </div>
+
+          <div class="gallery-slide">
+            <img src="{{ url_for('static', filename='images/summer-membership.jpeg') }}" alt="Summer Membership" loading="lazy" />
+            <div class="gallery-caption">
+              <span class="gc-label">Fitness Zone</span>
+              <span class="gc-text">Summer Membership Special</span>
+            </div>
+          </div>
+
+          <div class="gallery-slide">
+            <img src="{{ url_for('static', filename='images/summer-slimdown.jpeg') }}" alt="Summer Slim Down" loading="lazy" />
+            <div class="gallery-caption">
+              <span class="gc-label">Campaign</span>
+              <span class="gc-text">Summer Slim Down Promo</span>
+            </div>
+          </div>
+
+          <div class="gallery-slide">
+            <img src="{{ url_for('static', filename='images/mental-wellbeing.jpg') }}" alt="Mental Wellbeing" loading="lazy" />
+            <div class="gallery-caption">
+              <span class="gc-label">Infographic</span>
+              <span class="gc-text">5 Steps to Mental Well-Being</span>
+            </div>
+          </div>
+
+          <div class="gallery-slide">
+            <img src="{{ url_for('static', filename='images/health-expo.jpeg') }}" alt="Health Expo" loading="lazy" />
+            <div class="gallery-caption">
+              <span class="gc-label">Event Promo</span>
+              <span class="gc-text">Davis Community Health Expo</span>
+            </div>
+          </div>
+
+          <div class="gallery-slide">
+            <img src="{{ url_for('static', filename='images/personal-training.jpg') }}" alt="Personal Training" loading="lazy" />
+            <div class="gallery-caption">
+              <span class="gc-label">Fitness Zone</span>
+              <span class="gc-text">Personal Training Special</span>
+            </div>
+          </div>
+
+          <div class="gallery-slide">
+            <img src="{{ url_for('static', filename='images/pump-and-core.jpg') }}" alt="Pump and Core" loading="lazy" />
+            <div class="gallery-caption">
+              <span class="gc-label">Class Promo</span>
+              <span class="gc-text">Pump &amp; Core with Carter</span>
+            </div>
+          </div>
+
+          <div class="gallery-slide">
+            <img src="{{ url_for('static', filename='images/monday-motivation.jpg') }}" alt="Monday Motivation" loading="lazy" />
+            <div class="gallery-caption">
+              <span class="gc-label">Engagement Post</span>
+              <span class="gc-text">Monday Motivation Graphic</span>
+            </div>
+          </div>
+
+        </div><!-- /gallery-track -->
+      </div><!-- /gallery-track-outer -->
+      <button class="gallery-arrow gallery-arrow--next" onclick="galleryNext()" aria-label="Next">&#8594;</button>
+    </div>
+    <div class="gallery-dots" id="galleryDots"></div>
+  </section>
+
+  <!-- CONTACT -->
   <section id="contact" class="section contact-section">
     <div class="contact-inner">
       <div class="contact-text">
@@ -242,16 +315,13 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════
-       FOOTER
-  ═══════════════════════════════════════════ -->
+  <!-- FOOTER -->
   <footer class="footer">
     <p>© 2025 {{ profile.name }} · Built with 💛</p>
     <a href="/upload" class="footer-admin">Admin: Upload Videos</a>
   </footer>
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  <!-- Load Instagram embeds if used -->
   <script async defer src="//www.instagram.com/embed.js"></script>
 </body>
 </html>
